@@ -1,9 +1,26 @@
+const toggleSpinner = (displayStyle) => {
+  document.getElementById("spinner").style.display = displayStyle;
+};
+const toggleSearch = (displayStyle) => {
+  document.getElementById("search-result").style.display = displayStyle;
+};
+
 const searchFood = () => {
   const searchField = document.getElementById("search-field");
+  //display Spinner
+  toggleSpinner("block");
+  toggleSearch("none");
   const searchText = searchField.value;
+  const noFound = document.getElementById("no-found");
   //   clear Data
   searchField.value = "";
   if (searchText == "") {
+    const div = document.createElement("div");
+    div.classList.add("col");
+    div.innerHTML = ` 
+    <h3 class="text-danger"> Input a Valid  </h3> 
+    `;
+    noFound.appendChild(div);
   } else {
     //Load Data
     const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchText}`;
@@ -18,9 +35,6 @@ const displaySearchResult = (meals) => {
   console.log(meals);
 
   SearchResult.textContent = "";
-  //   if (meals.length == 0) {
-  //     div.innerHTML = `Not Found`;
-  //   }
 
   meals.forEach((meal) => {
     // console.log(meal);
@@ -29,18 +43,23 @@ const displaySearchResult = (meals) => {
     div.innerHTML = `
     <div onclick="loadMealDetail(${meal.idMeal})" class="card h-100">
         <img src="${meal.strMealThumb}" class="card-img-top" alt="..." />
-        <div class="card-body">
-            <h5 class="card-title">${meal.strMeal}</h5>
-            <p class="card-text">${meal.strInstructions.slice(0, 200)}
-            
-            </p>
-        </div>
+       <div class="card-body ">
+       //Templte String a conditons 
+       <p>${meal.strIngredient8 ? meal.strIngredient8 : ""} </p>
+        <h5 class="card-title">${meal.strMeal}</h5>
+        <p class="card-text">${meal.strInstructions.slice(0, 200)}
+        
+        </p>
+    </div> 
+      
   </div>
       
       `;
 
     SearchResult.appendChild(div);
   });
+  toggleSpinner("none");
+  toggleSearch("block");
 };
 
 const loadMealDetail = (mealId) => {
